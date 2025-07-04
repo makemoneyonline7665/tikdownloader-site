@@ -1,0 +1,141 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TikDownloader Clone</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f9f9f9;
+      color: #222;
+      margin: 0;
+      padding: 0;
+    }
+    header {
+      background-color: #28a745;
+      padding: 20px;
+      color: white;
+      text-align: center;
+    }
+    nav {
+      background: #fff;
+      padding: 10px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid #ddd;
+    }
+    nav a {
+      margin-left: 15px;
+      color: #28a745;
+      text-decoration: none;
+    }
+    .container {
+      max-width: 800px;
+      margin: 30px auto;
+      padding: 20px;
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    .input-section {
+      text-align: center;
+    }
+    input[type="text"] {
+      width: 80%;
+      padding: 12px;
+      font-size: 16px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+    button {
+      padding: 12px 20px;
+      background-color: #28a745;
+      color: white;
+      border: none;
+      margin-top: 10px;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    #loading {
+      margin-top: 10px;
+      display: none;
+      color: #555;
+    }
+    #result {
+      margin-top: 20px;
+      text-align: center;
+    }
+    footer {
+      background: #f1f1f1;
+      text-align: center;
+      padding: 20px;
+      margin-top: 30px;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>TikDownloader</h1>
+  </header>
+  <nav>
+    <div>
+      <a href="#">Download Video</a>
+      <a href="#">Download MP3</a>
+    </div>
+    <div>
+      <select>
+        <option>EN</option>
+        <option>FR</option>
+        <option>ES</option>
+      </select>
+    </div>
+  </nav>
+  <div class="container">
+    <div class="input-section">
+      <h2>Download TikTok Videos Without Watermark</h2>
+      <input id="tiktok-url" type="text" placeholder="Paste TikTok video URL here">
+      <br>
+      <button onclick="downloadTik()">Download</button>
+      <div id="loading">Retrieving data, please wait a few seconds...</div>
+      <div id="result"></div>
+    </div>
+  </div>
+  <footer>
+    <p>&copy; 2025 TikDownloader.io Clone | Not affiliated with TikTok</p>
+    <a href="#">Privacy Policy</a> | <a href="#">Terms of Use</a> | <a href="#">Contact</a>
+  </footer>
+
+  <script>
+    async function downloadTik(){
+      const input = document.getElementById('tiktok-url');
+      const url = input.value.trim();
+      if(!url) return alert('Please paste a TikTok URL first.');
+
+      document.getElementById('loading').style.display = 'block';
+      document.getElementById('result').innerHTML = '';
+
+      try {
+        const res = await fetch(`https://tikwm.com/api/?url=${encodeURIComponent(url)}`);
+        const json = await res.json();
+
+        if(json.data?.play) {
+          document.getElementById('result').innerHTML = `
+            <video controls width="300" src="${json.data.play}"></video><br><br>
+            <a href="${json.data.play}" download style="color:white;background:#28a745;padding:10px 20px;border-radius:5px;text-decoration:none;">Download MP4</a>
+            <a href="${json.data.music}" download style="margin-left:10px;color:white;background:#17a2b8;padding:10px 20px;border-radius:5px;text-decoration:none;">Download MP3</a>
+          `;
+        } else {
+          document.getElementById('result').innerHTML = 'Invalid video or download failed.';
+        }
+      } catch(e) {
+        document.getElementById('result').innerHTML = 'Error connecting to the API.';
+      } finally {
+        document.getElementById('loading').style.display = 'none';
+      }
+    }
+  </script>
+</body>
+</html>
